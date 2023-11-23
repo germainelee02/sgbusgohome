@@ -91,52 +91,52 @@ describe("(Task 1) getBusServiceStops", () => {
   });
 });
 
-// describe("(Task 2) getNearbyBusStops", () => {
-//   test("returns bus stops nearby 103.90, 1.31", async () => {
-//     jest.setTimeout(30000);
+describe("(Task 2) getNearbyBusStops", () => {
+  test("returns bus stops nearby 103.90, 1.31", async () => {
+    jest.setTimeout(30000);
 
-//     const allStops = await busStops(db).find().toArray();
-//     const point: Point = [103.9, 1.31];
-//     const distanceKm = 1.0;
+    const allStops = await busStops(db).find().toArray();
+    const point: Point = [103.9, 1.31];
+    const distanceKm = 1.0;
 
-//     const response = await gaxios.request({
-//       method: "GET",
-//       url: "/locations/103.90-1.31/nearbyStops",
-//     });
+    const response = await gaxios.request({
+      method: "GET",
+      url: "/locations/103.90-1.31/nearbyStops",
+    });
 
-//     expect(response.status).toBe(200);
+    expect(response.status).toBe(200);
 
-//     throwIfNearbyBusStopsInvalid(allStops, point, response.data, distanceKm);
-//   });
+    throwIfNearbyBusStopsInvalid(allStops, point, response.data, distanceKm);
+  });
 
-//   test("returns bus stops nearby 103.90, 1.31, maxDistance=2.0", async () => {
-//     const allStops = await busStops(db).find().toArray();
-//     const point: Point = [103.9, 1.31];
-//     const distanceKm = 2.0;
+  test("returns bus stops nearby 103.90, 1.31, maxDistance=2.0", async () => {
+    const allStops = await busStops(db).find().toArray();
+    const point: Point = [103.9, 1.31];
+    const distanceKm = 2.0;
 
-//     const response = await gaxios.request({
-//       method: "GET",
-//       url: "/locations/103.90-1.31/nearbyStops?maxDistance=2.0",
-//     });
+    const response = await gaxios.request({
+      method: "GET",
+      url: "/locations/103.90-1.31/nearbyStops?maxDistance=2.0",
+    });
 
-//     expect(response.status).toBe(200);
-//     throwIfNearbyBusStopsInvalid(allStops, point, response.data, distanceKm);
-//   });
+    expect(response.status).toBe(200);
+    throwIfNearbyBusStopsInvalid(allStops, point, response.data, distanceKm);
+  });
 
-//   test("returns bus stops nearby 103.90, 1.31, maxDistance=0.3", async () => {
-//     const allStops = await busStops(db).find().toArray();
-//     const point: Point = [103.9, 1.31];
-//     const distanceKm = 0.3;
+  test("returns bus stops nearby 103.90, 1.31, maxDistance=0.3", async () => {
+    const allStops = await busStops(db).find().toArray();
+    const point: Point = [103.9, 1.31];
+    const distanceKm = 0.3;
 
-//     const response = await gaxios.request({
-//       method: "GET",
-//       url: "/locations/103.90-1.31/nearbyStops?maxDistance=0.3",
-//     });
+    const response = await gaxios.request({
+      method: "GET",
+      url: "/locations/103.90-1.31/nearbyStops?maxDistance=0.3",
+    });
 
-//     expect(response.status).toBe(200);
-//     throwIfNearbyBusStopsInvalid(allStops, point, response.data, distanceKm);
-//   });
-// });
+    expect(response.status).toBe(200);
+    throwIfNearbyBusStopsInvalid(allStops, point, response.data, distanceKm);
+  });
+});
 
 // describe("(Task 3, Part 1) getBusServiceRating", () => {
 //   test("returns correct BusServiceRating when there are no ratings", async () => {

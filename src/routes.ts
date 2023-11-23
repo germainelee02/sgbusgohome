@@ -118,8 +118,78 @@ export const getNearbyBusStops: BusGoHomeRoute =
 
     // Task 2: Implement a Route to Find Nearby Bus Stops
     // TODO: Your implementation here.
+    const dist = req.query?.maxDistance ?? 1.0;
 
-    res.status(500).json({ error: "Not implemented" });
+    const degreeToRadian = (degree: number) => {
+      return degree * (Math.PI / 180.0);
+    };
+    const radianToDegree = (radian: number) => {
+      return radian * (180.0 / Math.PI);
+    };
+    const MIN_LAT = -Math.PI / 2;
+    const MAX_LAT = Math.PI / 2;
+    const MAX_LON = Math.PI; // 180 degrees
+    const MIN_LON = -Math.PI;
+    const FULL_CIRCLE_RAD = Math.PI * 2;
+
+    const radDist = Number(dist) / 6371.0;
+    const lat = degreeToRadian(Number(Latitude));
+    const lon = degreeToRadian(Number(Longitude));
+    let minLat = lat - radDist;
+    let maxLat = lat + radDist;
+    let minLon;
+    let maxLon;
+    let deltaLon;
+    if (minLat > MIN_LAT && maxLat < MAX_LAT) {
+      deltaLon = Math.asin(Math.sin(radDist) / Math.cos(lat));
+      minLon = lon - deltaLon;
+      if (minLon < MIN_LON) {
+        minLon += FULL_CIRCLE_RAD;
+      }
+      maxLon = lon + deltaLon;
+      if (maxLon > MAX_LON) {
+        maxLon -= FULL_CIRCLE_RAD;
+      }
+    } else {
+      minLat = Math.max(minLat, MIN_LAT);
+      maxLat = Math.min(maxLat, MAX_LAT);
+      minLon = MIN_LON;
+      maxLon = MAX_LON;
+    }
+    const lonCondition = {
+      $and: [
+        { "Location.coordinates.0": { $gte: radianToDegree(minLon) } },
+        { "Location.coordinates.0": { $lte: radianToDegree(maxLon) } },
+      ],
+    };
+    const latCondition = {
+      $and: [
+        { "Location.coordinates.1": { $gte: radianToDegree(minLat) } },
+        { "Location.coordinates.1": { $lte: radianToDegree(maxLat) } },
+      ],
+    };
+
+    // Combine both conditions with $and
+    const query = { $and: [latCondition, lonCondition] };
+    const busStopsWithinRange = await busStops(db).find(query, {
+      projection: { _id: 0 },
+    });
+    const ans = [];
+    for await (const doc of busStopsWithinRange) {
+      const condition =
+        Math.acos(
+          Math.sin(lat) *
+            Math.sin(degreeToRadian(doc.Location.coordinates[1])) +
+            Math.cos(lat) *
+              Math.cos(degreeToRadian(doc.Location.coordinates[1])) *
+              Math.cos(degreeToRadian(doc.Location.coordinates[0]) - lon)
+        ) <= Number(dist);
+
+      if (condition) {
+        ans.push(doc);
+      }
+    }
+    res.status(200).json(ans);
   };
 
 export const getBusServiceRating: BusGoHomeRoute =
