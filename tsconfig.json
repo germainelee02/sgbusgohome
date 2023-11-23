@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "allowJs": true,
+        "target": "es2018",
+        "module": "commonjs",
+        "skipLibCheck": true,
+        "removeComments": true,
+        "noUnusedLocals": false,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        "preserveConstEnums": true,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "baseUrl": "./",
+        "declaration": true,
+        "outDir": "./build"
+    },
+    "exclude": ["node_modules", "**/__tests__/*", "**/__testhelpers/*", "**/__fixtures__/*"],
+    "include": ["src"]
+}
