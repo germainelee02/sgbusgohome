@@ -8,6 +8,17 @@ export interface RouteContext {
 
 export type BusGoHomeRoute = (ctx: RouteContext) => RequestHandler;
 
+type BusStopSchema = {
+  BusStopCode: string;
+  RoadName: string;
+  Description: string;
+  Location: {
+    type: "Point";
+    coordinates: [number, number];
+  };
+  rank?: number;
+};
+
 // This route is included as an example.
 export const getBusStop: BusGoHomeRoute =
   ({ db }) =>
@@ -36,7 +47,68 @@ export const getBusServiceStops: BusGoHomeRoute =
     //         and Direction
     // TODO: Your implementation here.
 
-    res.status(500).json({ error: "Not implemented" });
+    // query 1: getting all the bus stop codes along the given route.
+    const selectedBusRoutes = busRoutes(db).find(
+      {
+        ServiceNo,
+        Direction: Number(Direction),
+      },
+      { projection: { _id: 0, BusStopCode: 1, Direction: 1, StopSequence: 1 } }
+    );
+
+    const busCodeToRank: { [index: string]: number[] } = {};
+    const selectedBusStopCodes = [];
+
+    /*
+    constructing a key-value pair such that:
+      - the key is the bus stop code
+      - the value is an array of all its stop sequences
+     */
+    for await (const doc of selectedBusRoutes) {
+      if (!busCodeToRank[doc.BusStopCode]) {
+        busCodeToRank[doc.BusStopCode] = [];
+        selectedBusStopCodes.push(doc.BusStopCode);
+      }
+      busCodeToRank[doc.BusStopCode].push(doc.StopSequence);
+    }
+    if (selectedBusStopCodes.length == 0) {
+      res.status(404).json({ error: "Not found" });
+      return;
+    }
+
+    // query 2: getting all the bus stop objects in the bus route
+    const selectedBusStops = await busStops(db).find(
+      {
+        BusStopCode: { $in: selectedBusStopCodes },
+      },
+      {
+        projection: { _id: 0 },
+      }
+    );
+
+    const busStopArr = [];
+    for await (const doc of selectedBusStops) {
+      const ranks = busCodeToRank[doc.BusStopCode];
+
+      // for each time the bus stop has a stop sequence, we append it to our busStopArr
+      for (let i = 0; i < ranks.length; i++) {
+        const rank = ranks[i];
+        busStopArr.push({ ...doc, rank });
+      }
+    }
+
+    // sorting the bus stops by their stop sequences (rank)
+    busStopArr.sort((firstElem: any, secondElem: any) => {
+      return firstElem.rank - secondElem.rank;
+    });
+
+    // removing the stop sequence from the bus stop object
+    for (let i = 0; i < busStopArr.length; i++) {
+      const obj: BusStopSchema = busStopArr[i];
+      delete obj.rank;
+    }
+
+    return res.status(200).json(busStopArr);
   };
 
 export const getNearbyBusStops: BusGoHomeRoute =

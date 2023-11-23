@@ -1,1 +1,278 @@
-[{"BusStopCode":"43009","RoadName":"Bt Batok Ctrl","Description":"Bt Batok Int","Location":{"type":"Point","coordinates":[103.75106190953444,1.34999354306126]}},{"BusStopCode":"43701","RoadName":"Bt Batok Ctrl","Description":"Blk 225","Location":{"type":"Point","coordinates":[103.75201666213025,1.34847060052694]}},{"BusStopCode":"43389","RoadName":"Bt Batok Ave 1","Description":"Opp Blk 102","Location":{"type":"Point","coordinates":[103.74834299093746,1.34760499094973]}},{"BusStopCode":"43519","RoadName":"Bt Batok East Ave 6","Description":"Opp Bt Batok Swim Cplx","Location":{"type":"Point","coordinates":[103.74835776931137,1.34527424103226]}},{"BusStopCode":"43599","RoadName":"Bt Batok East Ave 6","Description":"Bt View Sec Sch","Location":{"type":"Point","coordinates":[103.75190146961904,1.34513161798285]}},{"BusStopCode":"43509","RoadName":"Bt Batok St 23","Description":"Blk 291E","Location":{"type":"Point","coordinates":[103.75436398130816,1.34359093090915]}},{"BusStopCode":"43219","RoadName":"Bt Batok St 23","Description":"Opp Sbst Bt Batok Depot","Location":{"type":"Point","coordinates":[103.75446757134857,1.3413740257309]}},{"BusStopCode":"43319","RoadName":"Bt Batok St 23","Description":"Opp Midview Bldg","Location":{"type":"Point","coordinates":[103.7574111060431,1.33972179277053]}},{"BusStopCode":"42319","RoadName":"Bt Batok East Ave 3","Description":"Burgundy Hill","Location":{"type":"Point","coordinates":[103.76043841269879,1.33915373900693]}},{"BusStopCode":"12209","RoadName":"Clementi Ave 6","Description":"Opp Logishub @ Clementi","Location":{"type":"Point","coordinates":[103.76429968220569,1.32653202760922]}},{"BusStopCode":"17379","RoadName":"Clementi Ave 6","Description":"Blk 304","Location":{"type":"Point","coordinates":[103.76389432891798,1.32049089180327]}},{"BusStopCode":"17189","RoadName":"C'wealth Ave West","Description":"Blk 317","Location":{"type":"Point","coordinates":[103.76406408827933,1.31790502165515]}},{"BusStopCode":"17179","RoadName":"C'wealth Ave West","Description":"Clementi Stn Exit B","Location":{"type":"Point","coordinates":[103.76536000516927,1.31528191560846]}},{"BusStopCode":"17259","RoadName":"Clementi Ave 2","Description":"Opp Blk 460","Location":{"type":"Point","coordinates":[103.76746074010758,1.31092798217655]}},{"BusStopCode":"17191","RoadName":"Clementi Rd","Description":"NUS High Sch","Location":{"type":"Point","coordinates":[103.7698914,1.305669444]}},{"BusStopCode":"16991","RoadName":"Clementi Ave 1","Description":"Opp Nan Hua High Sch","Location":{"type":"Point","coordinates":[103.76988582423061,1.30777929773028]}},{"BusStopCode":"16891","RoadName":"Clementi Ave 1","Description":"Opp Blk 420A","Location":{"type":"Point","coordinates":[103.76816139829276,1.30982186660782]}},{"BusStopCode":"17161","RoadName":"C'wealth Ave West","Description":"Blk 455","Location":{"type":"Point","coordinates":[103.76685476875124,1.31240993603605]}},{"BusStopCode":"17171","RoadName":"C'wealth Ave West","Description":"Clementi Stn Exit A","Location":{"type":"Point","coordinates":[103.76502698264449,1.31497399268611]}},{"BusStopCode":"17181","RoadName":"C'wealth Ave West","Description":"Opp Blk 317","Location":{"type":"Point","coordinates":[103.7638854582427,1.31749570803723]}},{"BusStopCode":"17371","RoadName":"Clementi Ave 6","Description":"Blk 201","Location":{"type":"Point","coordinates":[103.76356592222618,1.32058194734278]}},{"BusStopCode":"12201","RoadName":"Clementi Ave 6","Description":"Logishub @ Clementi","Location":{"type":"Point","coordinates":[103.76399509585458,1.32670826856501]}},{"BusStopCode":"42311","RoadName":"Bt Batok East Ave 3","Description":"Opp Burgundy Hill","Location":{"type":"Point","coordinates":[103.76028055601957,1.33865749997067]}},{"BusStopCode":"43311","RoadName":"Bt Batok St 23","Description":"Midview Bldg","Location":{"type":"Point","coordinates":[103.75695468286781,1.339803833761]}},{"BusStopCode":"43211","RoadName":"Bt Batok St 23","Description":"Sbst Bt Batok Depot","Location":{"type":"Point","coordinates":[103.75507916698768,1.34087277799084]}},{"BusStopCode":"43501","RoadName":"Bt Batok St 23","Description":"Opp Blk 291E","Location":{"type":"Point","coordinates":[103.75423776871699,1.34376366037202]}},{"BusStopCode":"43591","RoadName":"Bt Batok East Ave 6","Description":"Opp Bt View Sec Sch","Location":{"type":"Point","coordinates":[103.7521198162659,1.3447586640008]}},{"BusStopCode":"43511","RoadName":"Bt Batok East Ave 6","Description":"Bt Batok Swim Cplx","Location":{"type":"Point","coordinates":[103.74849870531534,1.34497394208663]}},{"BusStopCode":"43381","RoadName":"Bt Batok Ave 1","Description":"Blk 102","Location":{"type":"Point","coordinates":[103.74766049075139,1.34696555762849]}},{"BusStopCode":"43709","RoadName":"Bt Batok Ctrl","Description":"Blk 644","Location":{"type":"Point","coordinates":[103.75207088829217,1.3486867689202]}},{"BusStopCode":"43009","RoadName":"Bt Batok Ctrl","Description":"Bt Batok Int","Location":{"type":"Point","coordinates":[103.75106190953444,1.34999354306126]}}]
+[
+  {
+    "BusStopCode": "43009",
+    "RoadName": "Bt Batok Ctrl",
+    "Description": "Bt Batok Int",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.75106190953444, 1.34999354306126]
+    }
+  },
+  {
+    "BusStopCode": "43701",
+    "RoadName": "Bt Batok Ctrl",
+    "Description": "Blk 225",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.75201666213025, 1.34847060052694]
+    }
+  },
+  {
+    "BusStopCode": "43389",
+    "RoadName": "Bt Batok Ave 1",
+    "Description": "Opp Blk 102",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.74834299093746, 1.34760499094973]
+    }
+  },
+  {
+    "BusStopCode": "43519",
+    "RoadName": "Bt Batok East Ave 6",
+    "Description": "Opp Bt Batok Swim Cplx",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.74835776931137, 1.34527424103226]
+    }
+  },
+  {
+    "BusStopCode": "43599",
+    "RoadName": "Bt Batok East Ave 6",
+    "Description": "Bt View Sec Sch",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.75190146961904, 1.34513161798285]
+    }
+  },
+  {
+    "BusStopCode": "43509",
+    "RoadName": "Bt Batok St 23",
+    "Description": "Blk 291E",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.75436398130816, 1.34359093090915]
+    }
+  },
+  {
+    "BusStopCode": "43219",
+    "RoadName": "Bt Batok St 23",
+    "Description": "Opp Sbst Bt Batok Depot",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.75446757134857, 1.3413740257309]
+    }
+  },
+  {
+    "BusStopCode": "43319",
+    "RoadName": "Bt Batok St 23",
+    "Description": "Opp Midview Bldg",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.7574111060431, 1.33972179277053]
+    }
+  },
+  {
+    "BusStopCode": "42319",
+    "RoadName": "Bt Batok East Ave 3",
+    "Description": "Burgundy Hill",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76043841269879, 1.33915373900693]
+    }
+  },
+  {
+    "BusStopCode": "12209",
+    "RoadName": "Clementi Ave 6",
+    "Description": "Opp Logishub @ Clementi",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76429968220569, 1.32653202760922]
+    }
+  },
+  {
+    "BusStopCode": "17379",
+    "RoadName": "Clementi Ave 6",
+    "Description": "Blk 304",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76389432891798, 1.32049089180327]
+    }
+  },
+  {
+    "BusStopCode": "17189",
+    "RoadName": "C'wealth Ave West",
+    "Description": "Blk 317",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76406408827933, 1.31790502165515]
+    }
+  },
+  {
+    "BusStopCode": "17179",
+    "RoadName": "C'wealth Ave West",
+    "Description": "Clementi Stn Exit B",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76536000516927, 1.31528191560846]
+    }
+  },
+  {
+    "BusStopCode": "17259",
+    "RoadName": "Clementi Ave 2",
+    "Description": "Opp Blk 460",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76746074010758, 1.31092798217655]
+    }
+  },
+  {
+    "BusStopCode": "17191",
+    "RoadName": "Clementi Rd",
+    "Description": "NUS High Sch",
+    "Location": { "type": "Point", "coordinates": [103.7698914, 1.305669444] }
+  },
+  {
+    "BusStopCode": "16991",
+    "RoadName": "Clementi Ave 1",
+    "Description": "Opp Nan Hua High Sch",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76988582423061, 1.30777929773028]
+    }
+  },
+  {
+    "BusStopCode": "16891",
+    "RoadName": "Clementi Ave 1",
+    "Description": "Opp Blk 420A",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76816139829276, 1.30982186660782]
+    }
+  },
+  {
+    "BusStopCode": "17161",
+    "RoadName": "C'wealth Ave West",
+    "Description": "Blk 455",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76685476875124, 1.31240993603605]
+    }
+  },
+  {
+    "BusStopCode": "17171",
+    "RoadName": "C'wealth Ave West",
+    "Description": "Clementi Stn Exit A",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76502698264449, 1.31497399268611]
+    }
+  },
+  {
+    "BusStopCode": "17181",
+    "RoadName": "C'wealth Ave West",
+    "Description": "Opp Blk 317",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.7638854582427, 1.31749570803723]
+    }
+  },
+  {
+    "BusStopCode": "17371",
+    "RoadName": "Clementi Ave 6",
+    "Description": "Blk 201",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76356592222618, 1.32058194734278]
+    }
+  },
+  {
+    "BusStopCode": "12201",
+    "RoadName": "Clementi Ave 6",
+    "Description": "Logishub @ Clementi",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76399509585458, 1.32670826856501]
+    }
+  },
+  {
+    "BusStopCode": "42311",
+    "RoadName": "Bt Batok East Ave 3",
+    "Description": "Opp Burgundy Hill",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.76028055601957, 1.33865749997067]
+    }
+  },
+  {
+    "BusStopCode": "43311",
+    "RoadName": "Bt Batok St 23",
+    "Description": "Midview Bldg",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.75695468286781, 1.339803833761]
+    }
+  },
+  {
+    "BusStopCode": "43211",
+    "RoadName": "Bt Batok St 23",
+    "Description": "Sbst Bt Batok Depot",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.75507916698768, 1.34087277799084]
+    }
+  },
+  {
+    "BusStopCode": "43501",
+    "RoadName": "Bt Batok St 23",
+    "Description": "Opp Blk 291E",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.75423776871699, 1.34376366037202]
+    }
+  },
+  {
+    "BusStopCode": "43591",
+    "RoadName": "Bt Batok East Ave 6",
+    "Description": "Opp Bt View Sec Sch",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.7521198162659, 1.3447586640008]
+    }
+  },
+  {
+    "BusStopCode": "43511",
+    "RoadName": "Bt Batok East Ave 6",
+    "Description": "Bt Batok Swim Cplx",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.74849870531534, 1.34497394208663]
+    }
+  },
+  {
+    "BusStopCode": "43381",
+    "RoadName": "Bt Batok Ave 1",
+    "Description": "Blk 102",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.74766049075139, 1.34696555762849]
+    }
+  },
+  {
+    "BusStopCode": "43709",
+    "RoadName": "Bt Batok Ctrl",
+    "Description": "Blk 644",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.75207088829217, 1.3486867689202]
+    }
+  },
+  {
+    "BusStopCode": "43009",
+    "RoadName": "Bt Batok Ctrl",
+    "Description": "Bt Batok Int",
+    "Location": {
+      "type": "Point",
+      "coordinates": [103.75106190953444, 1.34999354306126]
+    }
+  }
+]
