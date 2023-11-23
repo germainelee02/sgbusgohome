@@ -47,7 +47,7 @@ export const getBusServiceStops: BusGoHomeRoute =
     //         and Direction
     // TODO: Your implementation here.
 
-    // query 1: getting all the bus stop codes along the given route.
+    // QUERY 1: getting all the bus stop codes along the given route
     const selectedBusRoutes = busRoutes(db).find(
       {
         ServiceNo,
@@ -98,7 +98,10 @@ export const getBusServiceStops: BusGoHomeRoute =
     }
 
     // sorting the bus stops by their stop sequences (rank)
-    busStopArr.sort((firstElem: any, secondElem: any) => {
+    busStopArr.sort((firstElem: BusStopSchema, secondElem: BusStopSchema) => {
+      if (!firstElem.rank || !secondElem.rank) {
+        return 1; // if there is no "rank" field, then just sort normally
+      }
       return firstElem.rank - secondElem.rank;
     });
 
@@ -118,35 +121,38 @@ export const getNearbyBusStops: BusGoHomeRoute =
 
     // Task 2: Implement a Route to Find Nearby Bus Stops
     // TODO: Your implementation here.
+
+    // declaring constants and utility functions here
     const MIN_LAT = -Math.PI / 2;
     const MAX_LAT = Math.PI / 2;
     const MAX_LON = Math.PI; // 180 degrees
     const MIN_LON = -Math.PI;
     const TWO_PI = Math.PI * 2;
-    const degreeToRadian = (degree: number) => {
+    const degreeToRadian = (degree: number): number => {
       return degree * (Math.PI / 180.0);
     };
-    const radianToDegree = (radian: number) => {
+    const radianToDegree = (radian: number): number => {
       return radian * (180.0 / Math.PI);
     };
 
-    const dist = req.query?.maxDistance ?? 1.0;
+    const { maxDistance } = req.query;
+    const dist: string = (maxDistance as string) ?? "1.0";
 
-    const distRadius = Number(dist) / 6371.0;
+    const radFraction = parseFloat(dist) / 6371.0;
     const lat = degreeToRadian(Number(Latitude));
     const lon = degreeToRadian(Number(Longitude));
-    let minLat = lat - distRadius;
-    let maxLat = lat + distRadius;
+    let minLat = lat - radFraction;
+    let maxLat = lat + radFraction;
     let minLon;
     let maxLon;
-    let deltaLon;
+    let thetaLon;
     if (minLat > MIN_LAT && maxLat < MAX_LAT) {
-      deltaLon = Math.asin(Math.sin(distRadius) / Math.cos(lat));
-      minLon = lon - deltaLon;
+      thetaLon = Math.asin(Math.sin(radFraction) / Math.cos(lat));
+      minLon = lon - thetaLon;
       if (minLon < MIN_LON) {
         minLon += TWO_PI;
       }
-      maxLon = lon + deltaLon;
+      maxLon = lon + thetaLon;
       if (maxLon > MAX_LON) {
         maxLon -= TWO_PI;
       }
@@ -156,16 +162,30 @@ export const getNearbyBusStops: BusGoHomeRoute =
       minLon = MIN_LON;
       maxLon = MAX_LON;
     }
+
+    const minLonDeg = radianToDegree(minLon);
+    const maxLonDeg = radianToDegree(maxLon);
+    const minLatDeg = radianToDegree(minLat);
+    const maxLatDeg = radianToDegree(maxLat);
+
     const lonCondition = {
       $and: [
-        { "Location.coordinates.0": { $gte: radianToDegree(minLon) } },
-        { "Location.coordinates.0": { $lte: radianToDegree(maxLon) } },
+        {
+          "Location.coordinates.0": { $gte: minLonDeg },
+        },
+        {
+          "Location.coordinates.0": { $lte: maxLonDeg },
+        },
       ],
     };
     const latCondition = {
       $and: [
-        { "Location.coordinates.1": { $gte: radianToDegree(minLat) } },
-        { "Location.coordinates.1": { $lte: radianToDegree(maxLat) } },
+        {
+          "Location.coordinates.1": { $gte: minLatDeg },
+        },
+        {
+          "Location.coordinates.1": { $lte: maxLatDeg },
+        },
       ],
     };
 
@@ -184,7 +204,7 @@ export const getNearbyBusStops: BusGoHomeRoute =
             Math.cos(lat) *
               Math.cos(degreeToRadian(doc.Location.coordinates[1])) *
               Math.cos(degreeToRadian(doc.Location.coordinates[0]) - lon)
-        ) <= Number(dist);
+        ) <= Number(radFraction);
 
       if (condition) {
         ans.push(doc);
