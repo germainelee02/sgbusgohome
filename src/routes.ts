@@ -118,37 +118,37 @@ export const getNearbyBusStops: BusGoHomeRoute =
 
     // Task 2: Implement a Route to Find Nearby Bus Stops
     // TODO: Your implementation here.
-    const dist = req.query?.maxDistance ?? 1.0;
-
+    const MIN_LAT = -Math.PI / 2;
+    const MAX_LAT = Math.PI / 2;
+    const MAX_LON = Math.PI; // 180 degrees
+    const MIN_LON = -Math.PI;
+    const TWO_PI = Math.PI * 2;
     const degreeToRadian = (degree: number) => {
       return degree * (Math.PI / 180.0);
     };
     const radianToDegree = (radian: number) => {
       return radian * (180.0 / Math.PI);
     };
-    const MIN_LAT = -Math.PI / 2;
-    const MAX_LAT = Math.PI / 2;
-    const MAX_LON = Math.PI; // 180 degrees
-    const MIN_LON = -Math.PI;
-    const FULL_CIRCLE_RAD = Math.PI * 2;
 
-    const radDist = Number(dist) / 6371.0;
+    const dist = req.query?.maxDistance ?? 1.0;
+
+    const distRadius = Number(dist) / 6371.0;
     const lat = degreeToRadian(Number(Latitude));
     const lon = degreeToRadian(Number(Longitude));
-    let minLat = lat - radDist;
-    let maxLat = lat + radDist;
+    let minLat = lat - distRadius;
+    let maxLat = lat + distRadius;
     let minLon;
     let maxLon;
     let deltaLon;
     if (minLat > MIN_LAT && maxLat < MAX_LAT) {
-      deltaLon = Math.asin(Math.sin(radDist) / Math.cos(lat));
+      deltaLon = Math.asin(Math.sin(distRadius) / Math.cos(lat));
       minLon = lon - deltaLon;
       if (minLon < MIN_LON) {
-        minLon += FULL_CIRCLE_RAD;
+        minLon += TWO_PI;
       }
       maxLon = lon + deltaLon;
       if (maxLon > MAX_LON) {
-        maxLon -= FULL_CIRCLE_RAD;
+        maxLon -= TWO_PI;
       }
     } else {
       minLat = Math.max(minLat, MIN_LAT);
@@ -176,6 +176,7 @@ export const getNearbyBusStops: BusGoHomeRoute =
     });
     const ans = [];
     for await (const doc of busStopsWithinRange) {
+      // one more check using a loop since $expr is not allowed
       const condition =
         Math.acos(
           Math.sin(lat) *
@@ -201,7 +202,46 @@ export const getBusServiceRating: BusGoHomeRoute =
     //                 for a Bus Service
     // TODO: Your implementation here.
 
-    res.status(500).json({ error: "Not implemented" });
+    const emptyRatingDoc = {
+      ServiceNo,
+      Direction: Number(Direction),
+      AvgRating: 0,
+      NumRatings: 0,
+    };
+
+    const selectedBusServices = await busServices(db).findOne(
+      {
+        ServiceNo,
+        Direction: Number(Direction),
+      },
+      {
+        projection: {
+          _id: 0,
+        },
+      }
+    );
+    // if the bus service doenst exist, then it is not found
+    if (!selectedBusServices) {
+      res.status(404).json({ error: "Not found" });
+      return;
+    }
+    const selectedRatings = await busServiceRatings(db).findOne(
+      {
+        ServiceNo,
+        Direction: Number(Direction),
+      },
+      {
+        projection: {
+          _id: 0,
+        },
+      }
+    );
+    // if the rating does not exist, but the bus service exists, insert an empty rating
+    if (!selectedRatings) {
+      res.status(200).json(emptyRatingDoc);
+      return;
+    }
+    res.status(200).json(selectedRatings);
   };
 
 export const submitBusServiceRating: BusGoHomeRoute =
@@ -211,8 +251,52 @@ export const submitBusServiceRating: BusGoHomeRoute =
 
     // Task 3, Part 2: Implement a Route to Submit a Rating for a Bus Service
     // TODO: Your implementation here.
+    const { rating } = req.body;
 
-    res.status(500).json({ error: "Not implemented" });
+    const emptyRatingDoc = {
+      ServiceNo,
+      Direction: Number(Direction),
+      AvgRating: 0,
+      NumRatings: 0,
+    };
+
+    let avgRating = 0;
+    let numRatings = 0;
+
+    const ratingObj = await busServiceRatings(db).findOne({
+      ServiceNo,
+      Direction: Number(Direction),
+    });
+    // if there is no rating found, insert an empty rating
+    if (!ratingObj) {
+      const insert = await busServiceRatings(db).insertOne(emptyRatingDoc);
+    } else {
+      // update the average ratings and number of ratings if there exists a rating
+      avgRating = ratingObj.AvgRating;
+      numRatings = ratingObj.NumRatings;
+    }
+    // update the new average rating
+    const newAvgRating = (avgRating * numRatings + rating) / (numRatings + 1);
+
+    await busServiceRatings(db).findOneAndUpdate(
+      {
+        ServiceNo,
+        Direction: Number(Direction),
+      },
+      {
+        $inc: { NumRatings: 1 }, // increment the numRatings by 1
+        $set: {
+          AvgRating: newAvgRating, // set the new average to the new average
+        },
+      },
+      {
+        projection: {
+          _id: 0,
+        },
+      }
+    );
+
+    res.status(204).json();
   };
 
 export const getOppositeBusStops: BusGoHomeRoute =
