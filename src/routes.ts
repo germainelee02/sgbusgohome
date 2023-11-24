@@ -222,7 +222,9 @@ export const getNearbyBusStops: BusGoHomeRoute =
     });
     const ans = [];
     for await (const doc of busStopsWithinRange) {
-      // one more check using a loop since $expr is not allowed
+      /**
+       * additional check to account for rounding errors in the mongodb filtering
+       */
       const condition =
         Math.acos(
           Math.sin(lat) *
