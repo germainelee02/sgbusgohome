@@ -138,287 +138,272 @@ describe("(Task 2) getNearbyBusStops", () => {
   });
 });
 
-// describe("(Task 3, Part 1) getBusServiceRating", () => {
-//   test("returns correct BusServiceRating when there are no ratings", async () => {
-//     const response = await gaxios.request({
-//       method: "GET",
-//       url: "/services/10e-1/rating",
-//     });
+describe("(Task 3, Part 1) getBusServiceRating", () => {
+  test("returns correct BusServiceRating when there are no ratings", async () => {
+    const response = await gaxios.request({
+      method: "GET",
+      url: "/services/10e-1/rating",
+    });
 
-//     expect(response.status).toBe(200);
-//     expect(response.data).toMatchObject({
-//       ServiceNo: "10e",
-//       Direction: 1,
-//       AvgRating: 0,
-//       NumRatings: 0,
-//     });
-//   });
+    expect(response.status).toBe(200);
+    expect(response.data).toMatchObject({
+      ServiceNo: "10e",
+      Direction: 1,
+      AvgRating: 0,
+      NumRatings: 0,
+    });
+  });
 
-//   test("returns 404 for non-existent bus service 164, direction 1", async () => {
-//     const response = await gaxios.request({
-//       method: "GET",
-//       url: "/services/164-1/rating",
-//     });
+  test("returns 404 for non-existent bus service 164, direction 1", async () => {
+    const response = await gaxios.request({
+      method: "GET",
+      url: "/services/164-1/rating",
+    });
 
-//     expect(response.status).toBe(404);
-//     expect(response.data).toMatchObject({ error: "Not found" });
-//   });
+    expect(response.status).toBe(404);
+    expect(response.data).toMatchObject({ error: "Not found" });
+  });
 
-//   test("returns rating statistics after ratings are submitted", async () => {
-//     expect(
-//       (
-//         await gaxios.request({
-//           method: "POST",
-//           url: "/services/33-1/rating",
-//           data: {
-//             rating: 3,
-//           },
-//         })
-//       ).status
-//     ).toBe(204);
+  test("returns rating statistics after ratings are submitted", async () => {
+    expect(
+      (
+        await gaxios.request({
+          method: "POST",
+          url: "/services/33-1/rating",
+          data: {
+            rating: 3,
+          },
+        })
+      ).status
+    ).toBe(204);
 
-//     expect(
-//       (
-//         await gaxios.request({
-//           method: "POST",
-//           url: "/services/33-1/rating",
-//           data: {
-//             rating: 4,
-//           },
-//         })
-//       ).status
-//     ).toBe(204);
+    expect(
+      (
+        await gaxios.request({
+          method: "POST",
+          url: "/services/33-1/rating",
+          data: {
+            rating: 4,
+          },
+        })
+      ).status
+    ).toBe(204);
 
-//     expect(
-//       (
-//         await gaxios.request({
-//           method: "POST",
-//           url: "/services/33-1/rating",
-//           data: {
-//             rating: 5,
-//           },
-//         })
-//       ).status
-//     ).toBe(204);
+    expect(
+      (
+        await gaxios.request({
+          method: "POST",
+          url: "/services/33-1/rating",
+          data: {
+            rating: 5,
+          },
+        })
+      ).status
+    ).toBe(204);
 
-//     const response = await gaxios.request({
-//       method: "GET",
-//       url: "/services/33-1/rating",
-//     });
+    const response = await gaxios.request({
+      method: "GET",
+      url: "/services/33-1/rating",
+    });
 
-//     expect(response.status).toBe(200);
+    expect(response.status).toBe(200);
 
-//     expect(response.data).toMatchObject({
-//       ServiceNo: "33",
-//       Direction: 1,
-//       NumRatings: 3,
-//     });
+    expect(response.data).toMatchObject({
+      ServiceNo: "33",
+      Direction: 1,
+      NumRatings: 3,
+    });
 
-//     expect(response.data.AvgRating).toBeCloseTo(4, 3);
-//   });
-// });
+    expect(response.data.AvgRating).toBeCloseTo(4, 3);
+  });
+});
 
-// describe("(Task 3, Part 2) submitBusServiceRating", () => {
-//   test("returns 404 for non-existent bus service 164, direction 1", async () => {
-//     const response = await gaxios.request({
-//       method: "POST",
-//       url: "/services/164-1/rating",
-//       data: {
-//         rating: 4,
-//       },
-//     });
+describe("(Task 3, Part 2) submitBusServiceRating", () => {
+  test("returns 404 for non-existent bus service 164, direction 1", async () => {
+    const response = await gaxios.request({
+      method: "POST",
+      url: "/services/164-1/rating",
+      data: {
+        rating: 4,
+      },
+    });
 
-//     expect(response.status).toBe(404);
-//     expect(response.data).toMatchObject({ error: "Not found" });
-//   });
+    expect(response.status).toBe(404);
+    expect(response.data).toMatchObject({ error: "Not found" });
+  });
 
-//   test("returns 400 when no rating is specified", async () => {
-//     const response = await gaxios.request({
-//       method: "POST",
-//       url: "/services/35-1/rating",
-//       data: {},
-//     });
+  test("returns 400 when no rating is specified", async () => {
+    const response = await gaxios.request({
+      method: "POST",
+      url: "/services/35-1/rating",
+      data: {},
+    });
 
-//     expect(response.status).toBe(400);
-//     expect(response.data).toMatchObject({ error: "Invalid rating" });
-//   });
+    expect(response.status).toBe(400);
+    expect(response.data).toMatchObject({ error: "Invalid rating" });
+  });
 
-//   test("returns 400 when rating is a string", async () => {
-//     const response = await gaxios.request({
-//       method: "POST",
-//       url: "/services/35-1/rating",
-//       data: {
-//         rating: "hello",
-//       },
-//     });
+  test("returns 400 when rating is a string", async () => {
+    const response = await gaxios.request({
+      method: "POST",
+      url: "/services/35-1/rating",
+      data: {
+        rating: "hello",
+      },
+    });
 
-//     expect(response.status).toBe(400);
-//     expect(response.data).toMatchObject({ error: "Invalid rating" });
-//   });
+    expect(response.status).toBe(400);
+    expect(response.data).toMatchObject({ error: "Invalid rating" });
+  });
 
-//   test("returns 400 when rating is less than 0", async () => {
-//     const response = await gaxios.request({
-//       method: "POST",
-//       url: "/services/35-1/rating",
-//       data: {
-//         rating: -1,
-//       },
-//     });
+  test("returns 400 when rating is less than 0", async () => {
+    const response = await gaxios.request({
+      method: "POST",
+      url: "/services/35-1/rating",
+      data: {
+        rating: -1,
+      },
+    });
 
-//     expect(response.status).toBe(400);
-//     expect(response.data).toMatchObject({ error: "Invalid rating" });
-//   });
+    expect(response.status).toBe(400);
+    expect(response.data).toMatchObject({ error: "Invalid rating" });
+  });
 
-//   test("returns 400 when rating is greater than 5", async () => {
-//     const response = await gaxios.request({
-//       method: "POST",
-//       url: "/services/35-1/rating",
-//       data: {
-//         rating: 5.5,
-//       },
-//     });
+  test("returns 400 when rating is greater than 5", async () => {
+    const response = await gaxios.request({
+      method: "POST",
+      url: "/services/35-1/rating",
+      data: {
+        rating: 5.5,
+      },
+    });
 
-//     expect(response.status).toBe(400);
-//     expect(response.data).toMatchObject({ error: "Invalid rating" });
-//   });
+    expect(response.status).toBe(400);
+    expect(response.data).toMatchObject({ error: "Invalid rating" });
+  });
 
-//   test("returns 204 with empty body after updating rating statistics", async () => {
-//     const response = await gaxios.request({
-//       method: "POST",
-//       url: "/services/36-1/rating",
-//       data: {
-//         rating: 3,
-//       },
-//     });
+  test("returns 204 with empty body after updating rating statistics", async () => {
+    const response = await gaxios.request({
+      method: "POST",
+      url: "/services/36-1/rating",
+      data: {
+        rating: 3,
+      },
+    });
 
-//     expect(response.status).toBe(204);
-//     expect(response.data).toBe("");
-//   });
+    expect(response.status).toBe(204);
+    expect(response.data).toBe("");
+  });
+});
 
-//   test("updates rating statistics atomically", async () => {
-//     const { AvgRating: expectedAvgRating, ...expectedRating } =
-//       await submitManyRatings("143", 2, 200);
+describe("(Task 4) getOppositeBusStops", () => {
+  test("returns bus stops along Tampines Ave 5", async () => {
+    const response = await gaxios.request({
+      method: "GET",
+      url: "/roads/Tampines Ave 5/stops",
+    });
 
-//     const actualRating = await gaxios.request({
-//       method: "GET",
-//       url: "/services/143-2/rating",
-//     });
+    expect(response.status).toBe(200);
+    expect(response.data).toMatchObject(StopsAlongTampinesAve5);
+  });
 
-//     expect(actualRating.status).toBe(200);
-//     expect(actualRating.data).toMatchObject(expectedRating);
+  test("returns bus stops along Victoria St", async () => {
+    const response = await gaxios.request({
+      method: "GET",
+      url: "/roads/Victoria St/stops",
+    });
 
-//     expect(actualRating.data.AvgRating).toBeCloseTo(expectedAvgRating, 3);
-//   });
-// });
+    expect(response.status).toBe(200);
+    expect(response.data).toMatchObject(StopsAlongVictoriaSt);
+  });
 
-// describe("(Task 4) getOppositeBusStops", () => {
-//   test("returns bus stops along Tampines Ave 5", async () => {
-//     const response = await gaxios.request({
-//       method: "GET",
-//       url: "/roads/Tampines Ave 5/stops",
-//     });
+  test("returns bus stops along Clementi Rd", async () => {
+    const response = await gaxios.request({
+      method: "GET",
+      url: "/roads/Clementi Rd/stops",
+    });
 
-//     expect(response.status).toBe(200);
-//     expect(response.data).toMatchObject(StopsAlongTampinesAve5);
-//   });
+    expect(response.status).toBe(200);
+    expect(response.data).toMatchObject(StopsAlongClementiRd);
+  });
 
-//   test("returns bus stops along Victoria St", async () => {
-//     const response = await gaxios.request({
-//       method: "GET",
-//       url: "/roads/Victoria St/stops",
-//     });
+  test("returns 404 for non-existent road Bartley Rd West", async () => {
+    const response = await gaxios.request({
+      method: "GET",
+      url: "/roads/Bartley Rd West/stops",
+    });
 
-//     expect(response.status).toBe(200);
-//     expect(response.data).toMatchObject(StopsAlongVictoriaSt);
-//   });
+    expect(response.status).toBe(404);
+    expect(response.data).toMatchObject({ error: "Not found" });
+  });
+});
 
-//   test("returns bus stops along Clementi Rd", async () => {
-//     const response = await gaxios.request({
-//       method: "GET",
-//       url: "/roads/Clementi Rd/stops",
-//     });
+describe("(Task 5) getJourney", () => {
+  [
+    { Origin: "95099", Destination: "16171", ScenicMode: false },
+    { Origin: "95099", Destination: "16171", ScenicMode: true },
+    { Origin: "92049", Destination: "49199", ScenicMode: false },
+    { Origin: "16149", Destination: "21309", ScenicMode: false },
+    { Origin: "44389", Destination: "56011", ScenicMode: false },
+    { Origin: "44389", Destination: "56011", ScenicMode: true },
+  ].forEach(({ Origin, Destination, ScenicMode }) => {
+    test(`finds a journey from ${Origin} to ${Destination}, scenic=${ScenicMode}`, async () => {
+      const originStop = await busStops(db).findOne({
+        BusStopCode: Origin,
+      });
+      const destinationStop = await busStops(db).findOne({
+        BusStopCode: Destination,
+      });
 
-//     expect(response.status).toBe(200);
-//     expect(response.data).toMatchObject(StopsAlongClementiRd);
-//   });
+      if (!originStop || !destinationStop)
+        throw new Error("Unable to find origin and/or destination bus stops");
 
-//   test("returns 404 for non-existent road Bartley Rd West", async () => {
-//     const response = await gaxios.request({
-//       method: "GET",
-//       url: "/roads/Bartley Rd West/stops",
-//     });
+      const { Description: OriginDescription } = originStop;
+      const { Description: DestinationDescription } = destinationStop;
 
-//     expect(response.status).toBe(404);
-//     expect(response.data).toMatchObject({ error: "Not found" });
-//   });
-// });
+      const journeyHeader = `${Origin} (${OriginDescription}) and ${Destination} (${DestinationDescription}), scenic=${ScenicMode}`;
 
-// describe("(Task 5) getJourney", () => {
-//   [
-//     { Origin: "95099", Destination: "16171", ScenicMode: false },
-//     { Origin: "95099", Destination: "16171", ScenicMode: true },
-//     { Origin: "92049", Destination: "49199", ScenicMode: false },
-//     { Origin: "16149", Destination: "21309", ScenicMode: false },
-//     { Origin: "44389", Destination: "56011", ScenicMode: false },
-//     { Origin: "44389", Destination: "56011", ScenicMode: true },
-//   ].forEach(({ Origin, Destination, ScenicMode }) => {
-//     test(`finds a journey from ${Origin} to ${Destination}, scenic=${ScenicMode}`, async () => {
-//       const originStop = await busStops(db).findOne({
-//         BusStopCode: Origin,
-//       });
-//       const destinationStop = await busStops(db).findOne({
-//         BusStopCode: Destination,
-//       });
+      const response = await gaxios.request({
+        method: "GET",
+        url: `/journeys/${Origin}-${Destination}?scenic=${
+          ScenicMode ? "truth" : "false"
+        }`,
+      });
 
-//       if (!originStop || !destinationStop)
-//         throw new Error("Unable to find origin and/or destination bus stops");
+      expect(response.status).toBe(200);
 
-//       const { Description: OriginDescription } = originStop;
-//       const { Description: DestinationDescription } = destinationStop;
+      try {
+        // First validate the repsonse types
+        expect(typeof response.data.estimatedTime).toBe("number");
+        expect(Array.isArray(response.data.segments)).toBe(true);
 
-//       const journeyHeader = `${Origin} (${OriginDescription}) and ${Destination} (${DestinationDescription}), scenic=${ScenicMode}`;
+        response.data.segments.forEach((segment: any) => {
+          expect(typeof segment.ServiceNo).toBe("string");
+          expect(typeof segment.Direction).toBe("number");
+          expect(typeof segment.OriginCode).toBe("string");
+          expect(typeof segment.DestinationCode).toBe("string");
+        });
 
-//       const response = await gaxios.request({
-//         method: "GET",
-//         url: `/journeys/${Origin}-${Destination}?scenic=${
-//           ScenicMode ? "truth" : "false"
-//         }`,
-//       });
+        await throwIfJourneyInvalid(db, Origin, Destination, response.data);
 
-//       expect(response.status).toBe(200);
-
-//       try {
-//         // First validate the repsonse types
-//         expect(typeof response.data.estimatedTime).toBe("number");
-//         expect(Array.isArray(response.data.segments)).toBe(true);
-
-//         response.data.segments.forEach((segment: any) => {
-//           expect(typeof segment.ServiceNo).toBe("string");
-//           expect(typeof segment.Direction).toBe("number");
-//           expect(typeof segment.OriginCode).toBe("string");
-//           expect(typeof segment.DestinationCode).toBe("string");
-//         });
-
-//         await throwIfJourneyInvalid(db, Origin, Destination, response.data);
-
-//         console.debug(
-//           `Journey from ${journeyHeader}: ${
-//             response.data.estimatedTime
-//           } minutes, ${response.data.segments.length - 1} transfers`
-//         );
-//       } catch (e) {
-//         console.debug(
-//           `Received the following invalid response for journey from ${journeyHeader}: \n\n${JSON.stringify(
-//             response.data,
-//             null,
-//             2
-//           )}`
-//         );
-//         throw e;
-//       }
-//     });
-//   });
-// });
+        console.debug(
+          `Journey from ${journeyHeader}: ${
+            response.data.estimatedTime
+          } minutes, ${response.data.segments.length - 1} transfers`
+        );
+      } catch (e) {
+        console.debug(
+          `Received the following invalid response for journey from ${journeyHeader}: \n\n${JSON.stringify(
+            response.data,
+            null,
+            2
+          )}`
+        );
+        throw e;
+      }
+    });
+  });
+});
 
 afterAll(async () => {
   await mongo.close();
