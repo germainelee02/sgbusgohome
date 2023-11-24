@@ -48,7 +48,7 @@ export const getBusServiceStops: BusGoHomeRoute =
     // TODO: Your implementation here.
 
     // QUERY 1: getting all the bus stop codes along the given route
-    const selectedBusRoutes = busRoutes(db).find(
+    const selectedBusRoutes = await busRoutes(db).find(
       {
         ServiceNo,
         Direction: Number(Direction),
@@ -222,13 +222,6 @@ export const getBusServiceRating: BusGoHomeRoute =
     //                 for a Bus Service
     // TODO: Your implementation here.
 
-    const emptyRatingDoc = {
-      ServiceNo,
-      Direction: Number(Direction),
-      AvgRating: 0,
-      NumRatings: 0,
-    };
-
     const selectedBusServices = await busServices(db).findOne(
       {
         ServiceNo,
@@ -245,23 +238,31 @@ export const getBusServiceRating: BusGoHomeRoute =
       res.status(404).json({ error: "Not found" });
       return;
     }
-    const selectedRatings = await busServiceRatings(db).findOne(
+    const selectedRatings = await busServiceRatings(db).findOneAndUpdate(
       {
         ServiceNo,
         Direction: Number(Direction),
       },
+
+      {
+        $setOnInsert: {
+          // ServiceNo,
+          // Direction: Number(Direction),
+          AvgRating: 0,
+          NumRatings: 0,
+        },
+      },
+
       {
         projection: {
           _id: 0,
         },
+        upsert: true,
+        returnDocument: "after",
       }
     );
-    // if the rating does not exist, but the bus service exists, insert an empty rating
-    if (!selectedRatings) {
-      res.status(200).json(emptyRatingDoc);
-      return;
-    }
-    res.status(200).json(selectedRatings);
+
+    res.status(200).json(selectedRatings.value);
   };
 
 export const submitBusServiceRating: BusGoHomeRoute =
@@ -273,49 +274,73 @@ export const submitBusServiceRating: BusGoHomeRoute =
     // TODO: Your implementation here.
     const { rating } = req.body;
 
-    const emptyRatingDoc = {
-      ServiceNo,
-      Direction: Number(Direction),
-      AvgRating: 0,
-      NumRatings: 0,
-    };
-
-    let avgRating = 0;
-    let numRatings = 0;
-
-    const ratingObj = await busServiceRatings(db).findOne({
+    const busServiceDoc = await busServices(db).findOne({
       ServiceNo,
       Direction: Number(Direction),
     });
-    // if there is no rating found, insert an empty rating
-    if (!ratingObj) {
-      const insert = await busServiceRatings(db).insertOne(emptyRatingDoc);
-    } else {
-      // update the average ratings and number of ratings if there exists a rating
-      avgRating = ratingObj.AvgRating;
-      numRatings = ratingObj.NumRatings;
-    }
-    // update the new average rating
-    const newAvgRating = (avgRating * numRatings + rating) / (numRatings + 1);
 
-    await busServiceRatings(db).findOneAndUpdate(
+    if (!busServiceDoc) {
+      res.status(404).json({ error: "Not found" });
+      return;
+    }
+
+    if (!rating || !(rating >= 0 && rating <= 5)) {
+      res.status(400).json({ error: "Invalid rating" });
+      return;
+    }
+    await busServiceRatings(db).updateOne(
       {
         ServiceNo,
         Direction: Number(Direction),
       },
-      {
-        $inc: { NumRatings: 1 }, // increment the numRatings by 1
-        $set: {
-          AvgRating: newAvgRating, // set the new average to the new average
-        },
-      },
-      {
-        projection: {
-          _id: 0,
-        },
-      }
-    );
 
+      [
+        // {
+        //   $set: {
+        //     tempRating: "$AvgRating",
+        //     tempNumber: "$NumRatings",
+        //   },
+        // },
+        {
+          $set: {
+            AvgRating: {
+              $divide: [
+                {
+                  $add: [{ $multiply: ["$AvgRating", "$NumRatings"] }, rating],
+                },
+                { $add: ["$NumRatings", 1] },
+              ],
+            },
+          },
+        },
+        {
+          $set: {
+            NumRatings: {
+              $add: ["$NumRatings", 1],
+            },
+          },
+        },
+        {
+          $set: {
+            AvgRating: {
+              $cond: {
+                if: { $eq: ["$AvgRating", null] },
+                then: rating,
+                else: "$AvgRating",
+              },
+            },
+            NumRatings: {
+              $cond: {
+                if: { $eq: ["$NumRatings", null] },
+                then: 1,
+                else: "$NumRatings",
+              },
+            },
+          },
+        },
+      ],
+      { upsert: true }
+    );
     res.status(204).json();
   };
 
