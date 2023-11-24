@@ -16,7 +16,7 @@ type BusStopSchema = {
     type: "Point";
     coordinates: [number, number];
   };
-  rank?: number;
+  stopSeq?: number;
 };
 
 // This route is included as an example.
@@ -96,21 +96,25 @@ export const getBusServiceStops: BusGoHomeRoute =
 
     const busStopArr = [];
     for await (const doc of selectedBusStops) {
-      const ranks = busCodeToRank[doc.BusStopCode];
+      const stopSeqs = busCodeToRank[doc.BusStopCode];
 
-      // for each time the bus stop has a stop sequence, we append it to our busStopArr
-      for (let i = 0; i < ranks.length; i++) {
-        const rank = ranks[i];
-        busStopArr.push({ ...doc, rank });
+      /**
+       * for each time the bus stop has a stop sequence, we append it to our busStopArr.
+       * we are adding the stopSeq field to our BusStopSchema for sorting later on.
+       */
+      for (let i = 0; i < stopSeqs.length; i++) {
+        const stopSeq = stopSeqs[i];
+        busStopArr.push({ ...doc, stopSeq });
       }
     }
-
-    // sorting the bus stops by their stop sequences (rank)
+    /**
+     * sorting the bus stops by their stop sequence
+     */
     busStopArr.sort((firstElem: BusStopSchema, secondElem: BusStopSchema) => {
-      if (!firstElem.rank || !secondElem.rank) {
-        return 1; // if there is no "rank" field, then just sort normally
+      if (!firstElem.stopSeq || !secondElem.stopSeq) {
+        return 1; // if there is no "stopSeq" field, then just sort normally
       }
-      return firstElem.rank - secondElem.rank;
+      return firstElem.stopSeq - secondElem.stopSeq;
     });
 
     /**
@@ -118,7 +122,7 @@ export const getBusServiceStops: BusGoHomeRoute =
      */
     for (let i = 0; i < busStopArr.length; i++) {
       const obj: BusStopSchema = busStopArr[i];
-      delete obj.rank;
+      delete obj.stopSeq;
     }
 
     return res.status(200).json(busStopArr);
