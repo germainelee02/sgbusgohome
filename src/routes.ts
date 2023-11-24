@@ -19,6 +19,11 @@ type BusStopSchema = {
   stopSeq?: number;
 };
 
+enum HTTPResponse {
+  NOT_FOUND = "Not found",
+  INVALID_RATING = "Invalid rating",
+}
+
 // This route is included as an example.
 export const getBusStop: BusGoHomeRoute =
   ({ db }) =>
@@ -58,7 +63,7 @@ export const getBusServiceStops: BusGoHomeRoute =
       { projection: { _id: 0, BusStopCode: 1, Direction: 1, StopSequence: 1 } }
     );
 
-    const busCodeToRank: { [index: string]: number[] } = {};
+    const busCodeToStopSeqs: { [index: string]: number[] } = {};
     const selectedBusStopCodes = [];
 
     /**
@@ -67,18 +72,18 @@ export const getBusServiceStops: BusGoHomeRoute =
      *    - value --> array of all its stop sequences
      */
     for await (const doc of selectedBusRoutes) {
-      if (!busCodeToRank[doc.BusStopCode]) {
-        busCodeToRank[doc.BusStopCode] = [];
+      if (!busCodeToStopSeqs[doc.BusStopCode]) {
+        busCodeToStopSeqs[doc.BusStopCode] = [];
         selectedBusStopCodes.push(doc.BusStopCode);
       }
-      busCodeToRank[doc.BusStopCode].push(doc.StopSequence);
+      busCodeToStopSeqs[doc.BusStopCode].push(doc.StopSequence);
     }
 
     /**
      * if the size of the cursor is 0, then there is no existing bus service
      */
     if (selectedBusStopCodes.length == 0) {
-      res.status(404).json({ error: "Not found" });
+      res.status(404).json({ error: HTTPResponse.NOT_FOUND });
       return;
     }
 
@@ -96,7 +101,7 @@ export const getBusServiceStops: BusGoHomeRoute =
 
     const busStopArr = [];
     for await (const doc of selectedBusStops) {
-      const stopSeqs = busCodeToRank[doc.BusStopCode];
+      const stopSeqs = busCodeToStopSeqs[doc.BusStopCode];
 
       /**
        * for each time the bus stop has a stop sequence, we append it to our busStopArr.
@@ -146,6 +151,7 @@ export const getNearbyBusStops: BusGoHomeRoute =
     const TWO_PI = Math.PI * 2;
     const ONE_EIGHTY_DEG = 180.0;
     const EARTH_RADIUS = 6371.0;
+    const DEFAULT_KM = "1.0";
 
     /**
      * declaring utility functions
@@ -158,7 +164,7 @@ export const getNearbyBusStops: BusGoHomeRoute =
     };
 
     const { maxDistance } = req.query;
-    const dist: string = (maxDistance as string) ?? "1.0"; // default value of 1.0km if maxDistance is not specified
+    const dist: string = (maxDistance as string) ?? DEFAULT_KM; // default value of 1.0km if maxDistance is not specified
 
     /**
      * referred to some of the source code from the website given:
@@ -265,7 +271,7 @@ export const getBusServiceRating: BusGoHomeRoute =
      * if the bus service doenst exist, return 404
      */
     if (!selectedBusServices) {
-      res.status(404).json({ error: "Not found" });
+      res.status(404).json({ error: HTTPResponse.NOT_FOUND });
       return;
     }
 
@@ -315,7 +321,7 @@ export const submitBusServiceRating: BusGoHomeRoute =
      * if bus service doesn't exist, then return 404
      */
     if (!busServiceDoc) {
-      res.status(404).json({ error: "Not found" });
+      res.status(404).json({ error: HTTPResponse.NOT_FOUND });
       return;
     }
 
@@ -323,7 +329,7 @@ export const submitBusServiceRating: BusGoHomeRoute =
      * if there is no rating, or is out of bounds, then return 400
      */
     if (!rating || !(rating >= 0 && rating <= 5)) {
-      res.status(400).json({ error: "Invalid rating" });
+      res.status(400).json({ error: HTTPResponse.INVALID_RATING });
       return;
     }
     await busServiceRatings(db).updateOne(
