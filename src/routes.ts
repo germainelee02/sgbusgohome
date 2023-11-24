@@ -47,7 +47,9 @@ export const getBusServiceStops: BusGoHomeRoute =
     //         and Direction
     // TODO: Your implementation here.
 
-    // QUERY 1: getting all the bus stop codes along the given route
+    /**
+     * QUERY 1: getting all the bus stop codes along the given route
+     */
     const selectedBusRoutes = await busRoutes(db).find(
       {
         ServiceNo,
@@ -59,10 +61,10 @@ export const getBusServiceStops: BusGoHomeRoute =
     const busCodeToRank: { [index: string]: number[] } = {};
     const selectedBusStopCodes = [];
 
-    /*
-    constructing a key-value pair such that:
-      - the key is the bus stop code
-      - the value is an array of all its stop sequences
+    /**
+     * constructing a key-value pair such that:
+     *    - key --> bus stop code
+     *    - value --> array of all its stop sequences
      */
     for await (const doc of selectedBusRoutes) {
       if (!busCodeToRank[doc.BusStopCode]) {
@@ -71,12 +73,18 @@ export const getBusServiceStops: BusGoHomeRoute =
       }
       busCodeToRank[doc.BusStopCode].push(doc.StopSequence);
     }
+
+    /**
+     * if the size of the cursor is 0, then there is no existing bus service
+     */
     if (selectedBusStopCodes.length == 0) {
       res.status(404).json({ error: "Not found" });
       return;
     }
 
-    // query 2: getting all the bus stop objects in the bus route
+    /**
+     * QUERY 2: getting all the bus stop objects in the bus route
+     */
     const selectedBusStops = await busStops(db).find(
       {
         BusStopCode: { $in: selectedBusStopCodes },
@@ -105,7 +113,9 @@ export const getBusServiceStops: BusGoHomeRoute =
       return firstElem.rank - secondElem.rank;
     });
 
-    // removing the stop sequence from the bus stop object
+    /**
+     * (clean up) removing the stop sequence from the bus stop object
+     */
     for (let i = 0; i < busStopArr.length; i++) {
       const obj: BusStopSchema = busStopArr[i];
       delete obj.rank;
@@ -122,23 +132,35 @@ export const getNearbyBusStops: BusGoHomeRoute =
     // Task 2: Implement a Route to Find Nearby Bus Stops
     // TODO: Your implementation here.
 
-    // declaring constants and utility functions here
+    /**
+     * declaring constants
+     */
     const MIN_LAT = -Math.PI / 2;
     const MAX_LAT = Math.PI / 2;
-    const MAX_LON = Math.PI; // 180 degrees
+    const MAX_LON = Math.PI;
     const MIN_LON = -Math.PI;
     const TWO_PI = Math.PI * 2;
+    const ONE_EIGHTY_DEG = 180.0;
+    const EARTH_RADIUS = 6371.0;
+
+    /**
+     * declaring utility functions
+     */
     const degreeToRadian = (degree: number): number => {
-      return degree * (Math.PI / 180.0);
+      return degree * (Math.PI / ONE_EIGHTY_DEG);
     };
     const radianToDegree = (radian: number): number => {
-      return radian * (180.0 / Math.PI);
+      return radian * (ONE_EIGHTY_DEG / Math.PI);
     };
 
     const { maxDistance } = req.query;
-    const dist: string = (maxDistance as string) ?? "1.0";
+    const dist: string = (maxDistance as string) ?? "1.0"; // default value of 1.0km if maxDistance is not specified
 
-    const radFraction = parseFloat(dist) / 6371.0;
+    /**
+     * referred to some of the source code from the website given:
+     * http://janmatuschek.de/LatitudeLongitudeBoundingCoordinates
+     */
+    const radFraction = parseFloat(dist) / EARTH_RADIUS;
     const lat = degreeToRadian(Number(Latitude));
     const lon = degreeToRadian(Number(Longitude));
     let minLat = lat - radFraction;
@@ -233,11 +255,18 @@ export const getBusServiceRating: BusGoHomeRoute =
         },
       }
     );
-    // if the bus service doenst exist, then it is not found
+
+    /**
+     * if the bus service doenst exist, return 404
+     */
     if (!selectedBusServices) {
       res.status(404).json({ error: "Not found" });
       return;
     }
+
+    /**
+     * if the bus service exists but there is not rating, then insert an empty document
+     */
     const selectedRatings = await busServiceRatings(db).findOneAndUpdate(
       {
         ServiceNo,
@@ -246,8 +275,6 @@ export const getBusServiceRating: BusGoHomeRoute =
 
       {
         $setOnInsert: {
-          // ServiceNo,
-          // Direction: Number(Direction),
           AvgRating: 0,
           NumRatings: 0,
         },
@@ -279,11 +306,17 @@ export const submitBusServiceRating: BusGoHomeRoute =
       Direction: Number(Direction),
     });
 
+    /**
+     * if bus service doesn't exist, then return 404
+     */
     if (!busServiceDoc) {
       res.status(404).json({ error: "Not found" });
       return;
     }
 
+    /**
+     * if there is no rating, or is out of bounds, then return 400
+     */
     if (!rating || !(rating >= 0 && rating <= 5)) {
       res.status(400).json({ error: "Invalid rating" });
       return;
@@ -295,12 +328,10 @@ export const submitBusServiceRating: BusGoHomeRoute =
       },
 
       [
-        // {
-        //   $set: {
-        //     tempRating: "$AvgRating",
-        //     tempNumber: "$NumRatings",
-        //   },
-        // },
+        /**
+         * this is following the formula:
+         * AvgRating = (AvgRating * NumRatings + rating)/(NumRatings + 1)
+         */
         {
           $set: {
             AvgRating: {
@@ -313,6 +344,10 @@ export const submitBusServiceRating: BusGoHomeRoute =
             },
           },
         },
+        /**
+         * this is following the formula:
+         * NumRatings = NumRatings + 1
+         */
         {
           $set: {
             NumRatings: {
@@ -320,6 +355,12 @@ export const submitBusServiceRating: BusGoHomeRoute =
             },
           },
         },
+        /**
+         * if the AvgRating/NumRatings is null, then the AvgRating = rating,
+         * and NumRatings = 1.
+         * if AvgRating/NumRatings is not null, then the operations above
+         * have already carried out the calculation.
+         */
         {
           $set: {
             AvgRating: {
