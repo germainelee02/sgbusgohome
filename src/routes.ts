@@ -215,7 +215,6 @@ export const getNearbyBusStops: BusGoHomeRoute =
       ],
     };
 
-    // Combine both conditions with $and
     const query = { $and: [latCondition, lonCondition] };
     const busStopsWithinRange = await busStops(db).find(query, {
       projection: { _id: 0 },
